@@ -6,9 +6,6 @@ import java.net.Inet4Address;
 
 public class GetConfigMessage extends ConfigMessage {
     public static final short COMMAND = 3;
-
-    Inet4Address DHCPIp;
-
     public static final int DHCP_IP_POS = 11;
     public static final int USE_DHCP_POS = 15;
     public static final int FIXED_IP_POS = 16;
@@ -23,9 +20,15 @@ public class GetConfigMessage extends ConfigMessage {
     public static final int PROXY_SERVER_NAME_LEN = 65;
     public static final int PROXY_SERVER_PORT_POS = 180;
     public static final int FIXED_DNS_POS = 182;
+    public Inet4Address DHCPIp;
 
     public GetConfigMessage(byte[] gatewayId) {
         setGatewayId(gatewayId);
+    }
+
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.GET_CONFIG;
     }
 
     public byte[] getBytes() {

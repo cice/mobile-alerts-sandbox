@@ -7,7 +7,10 @@ import org.apache.commons.codec.binary.Hex;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,7 +24,7 @@ public class MobileAlertsGatewayUdp {
     private IMessageHandler Handler;
 
     public MobileAlertsGatewayUdp() throws SocketException {
-        socket = new DatagramSocket();
+        socket = new DatagramSocket(PORT);
     }
 
     public void setHandler(IMessageHandler handler) {

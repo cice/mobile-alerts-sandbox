@@ -17,7 +17,7 @@ public abstract class ReceivedMessage {
             case GetConfigMessage.COMMAND:
                 return parseGetConfig(header, body);
             default:
-                throw new IllegalStateException("Unexpected command: " + header.Command);
+                return null;
         }
     }
 

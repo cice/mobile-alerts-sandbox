@@ -1,7 +1,8 @@
 package digital.theisen.messages;
 
 public interface IMessage {
-    byte[] getGatewayId();
-    void setGatewayId(byte[] gatewayId);
+    CommandType getCommandType();
+
     byte[] getBytes();
 }
+

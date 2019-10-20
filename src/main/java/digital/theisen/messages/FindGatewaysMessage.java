@@ -6,23 +6,27 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 public class FindGatewaysMessage implements IMessage {
     public static short SIZE = 10;
     private static byte[] ALL_GATEWAYS = new byte[]{0, 0, 0, 0, 0, 0};
-    public static short COMMAND = 1;
+    private byte[] GatewayId;
 
     public FindGatewaysMessage() {
         GatewayId = ALL_GATEWAYS;
     }
 
-    private byte[] GatewayId;
+    public FindGatewaysMessage(byte[] gatewayId) {
+        GatewayId = gatewayId;
+    }
+
     public byte[] getGatewayId() {
         return GatewayId;
     }
 
-    public void setGatewayId(byte[] gatewayId) {
-        GatewayId = gatewayId;
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.FIND_GATEWAYS;
     }
 
     public byte[] getBytes() {
-        MessageHeader header = new MessageHeader(COMMAND, GatewayId, SIZE);
+        MessageHeader header = new MessageHeader(getCommandType().getValue(), GatewayId, SIZE);
 
         return header.getBytes();
     }

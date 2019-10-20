@@ -1,57 +1,29 @@
 package digital.theisen;
 
-import digital.theisen.messages.FindGatewaysMessage;
-import digital.theisen.messages.GetConfigMessage;
-import digital.theisen.messages.IMessage;
-import digital.theisen.messages.SetConfigMessage;
-
 import java.io.IOException;
-import java.net.SocketException;
+import java.net.Inet4Address;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Future;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        final MobileAlertsGatewayUdp udp = new MobileAlertsGatewayUdp();
-
-        Runnable listener = udp.listen();
+    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(listener);
-        udp.setHandler((IMessage msg) -> {
-            if (msg instanceof GetConfigMessage) {
-                GetConfigMessage getConfig = (GetConfigMessage) msg;
-                System.out.println("UseProxy: " + getConfig.UseProxy);
 
-                SetConfigMessage setConfig = getConfig.setConfigMessage();
-                setConfig.UseProxy = false;
-                setConfig.DeviceName = "Sensor-Dingens";
+        ConfigureGatewayProcedure procedure = new ConfigureGatewayProcedure(
+                (Inet4Address) Inet4Address.getByName("192.168.178.52"),
+                (short) 8080,
+                "SensorBums"
+        );
 
-                try {
-                    System.out.println("Sending new config");
-                    udp.sendMessage(setConfig);
-                    System.out.println("Setting handler");
-                    udp.setHandler((IMessage nextMsg) -> {
-                        if (nextMsg instanceof GetConfigMessage) {
-                            return true;
-                        }
-                        return false;
-                    });
-                    System.out.println("Checking config");
-                    udp.sendMessage(new FindGatewaysMessage());
-                    return false;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return false;
-        });
-        udp.sendMessage(new FindGatewaysMessage());
+        Future<GatewayInformation> result = executor.submit(procedure);
 
-        System.out.println("Taking a nap");
-        Thread.sleep(30000);
+        GatewayInformation gatewayInformation = result.get();
+
+        System.out.println(gatewayInformation);
+
         executor.shutdownNow();
     }
 }
