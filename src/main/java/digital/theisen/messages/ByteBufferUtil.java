@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class ByteBufferUtil {
     static Inet4Address readInetAddress(ByteBuffer body, int index) {
-        byte[] buf = readBytes(body, index, 4);
+        byte[] buf = readBytes(body, index, 4, false);
         try {
             return (Inet4Address) Inet4Address.getByAddress(buf);
         } catch (UnknownHostException e) {
@@ -16,15 +16,19 @@ public class ByteBufferUtil {
     }
 
     static String readString(ByteBuffer body, int index, int length) {
-        return new String(readBytes(body, index, length));
+        return new String(readBytes(body, index, length, true));
     }
 
-    static byte[] readBytes(ByteBuffer body, int index, int length) {
+    public static byte[] readBytes(ByteBuffer body, int index, int length) {
+        return readBytes(body, index, length, false);
+    }
+
+    public static byte[] readBytes(ByteBuffer body, int index, int length, boolean cString) {
         byte[] buf = new byte[length];
         int actualLength = length;
         for (int i = 0; i < length; i++) {
             buf[i] = body.get(i + index);
-            if (buf[i] == 0) {
+            if (cString && buf[i] == 0) {
                 actualLength = i;
                 break;
             }

@@ -32,5 +32,10 @@
             <artifactId>org.eclipse.jdt.annotation</artifactId>
             <version>2.2.300</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.4.20.v20190813</version>
+        </dependency>
     </dependencies>
 </project>

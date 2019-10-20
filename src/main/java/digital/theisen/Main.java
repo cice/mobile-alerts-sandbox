@@ -9,11 +9,11 @@ import java.util.concurrent.Future;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
+    public static void main(String[] args) throws Exception {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         ConfigureGatewayProcedure procedure = new ConfigureGatewayProcedure(
-                (Inet4Address) Inet4Address.getByName("192.168.178.52"),
+                (Inet4Address) Inet4Address.getByName("192.168.178.20"),
                 (short) 8080,
                 "SensorBums"
         );
@@ -25,5 +25,7 @@ public class Main {
         System.out.println(gatewayInformation);
 
         executor.shutdownNow();
+        HttpServer server = new HttpServer();
+        server.startServer();
     }
 }
